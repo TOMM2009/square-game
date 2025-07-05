@@ -85,10 +85,13 @@
     const auth = firebase.auth();
 
     // 앱 시작하면 로그인 폼 보여주기
-    window.onload = function() {
-  document.getElementById("loginForm").style.display = "block";
+   window.onload = function() {
+  const loginForm = document.getElementById("loginForm");
+  loginForm.style.display = "block";
+  loginForm.style.visibility = "visible";
+  loginForm.style.opacity = "1";
 };
-    //document.getElementById("loginForm").style.display = "block";
+   
 
     // 로그인 처리
     function login() {
