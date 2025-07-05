@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <title>제곱수 끝장내기 ver1.3</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      padding: 20px;
+      background-color: #f9f9f9;
+    }
+    #game {
+      margin-top: 20px;
+    }
+    input {
+      font-size: 16px;
+    }
+    table {
+      border-collapse: collapse;
+      margin-top: 20px;
+      width: 100%;
+    }
+    th, td {
+      border: 1px solid #333;
+      padding: 8px;
+      text-align: center;
+    }
+    th {
+      background-color: #eee;
+    }
+  </style>
+</head>
+<body>
+  <h1>제곱수 끝장내기 ver1.3</h1>
+  <div id="start">
+    <p>게임 시작할까요? (yes 입력)</p>
+    <input type="text" id="startInput" />
+    <button onclick="startGame()">Start</button>
+  </div>
+
+  <div id="game" style="display:none;">
+    <div id="question"></div>
+    <input type="text" id="answerInput" />
+    <button onclick="submitAnswer()">제출</button>
+    <div id="feedback"></div>
+  </div>
+
+  <div id="result"></div>
+
+  <script>
+    const excluded = [11, 13, 20, 30];
+    let questionCount = 0;
+    const totalQuestions = 20;
+    let records = [];
+    let currentQuestion = null;
+    let startTime = null;
+
+    function startGame() {
+      const input = document.getElementById('startInput').value.trim();
+      if (input.toLowerCase() === 'yes') {
+        document.getElementById('start').style.display = 'none';
+        document.getElementById('game').style.display = 'block';
+        nextQuestion();
+      } else {
+        alert('게임을 종료합니다.');
+      }
+    }
+
+    function nextQuestion() {
+      if (questionCount >= totalQuestions) {
+        endGame();
+        return;
+      }
+
+      let num;
+      do {
+        num = Math.floor(Math.random() * (32 - 11 + 1)) + 11;
+      } while (excluded.includes(num));
+
+      const direction = Math.random() < 0.5 ? 'forward' : 'reverse';
+
+      if (direction === 'forward') {
+        const square = num * num;
+        currentQuestion = {
+          text: `?² = ${square}`,
+          answer: num
+        };
+      } else {
+        currentQuestion = {
+          text: `${num}² = ?`,
+          answer: num * num
+        };
+      }
+
+      document.getElementById('question').textContent =
+        `[${questionCount + 1}번 문제] ${currentQuestion.text}`;
+      document.getElementById('answerInput').value = '';
+      document.getElementById('feedback').textContent = '';
+
+      startTime = performance.now();
+    }
+
+    function submitAnswer() {
+      const input = document.getElementById('answerInput').value.trim();
+      const userAnswer = Number(input);
+      const endTime = performance.now();
+      const timeTaken = ((endTime - startTime) / 1000).toFixed(2);
+
+      let feedback = '';
+      if (userAnswer === currentQuestion.answer) {
+        feedback = `정답! 반응 시간: ${timeTaken} 초`;
+      } else {
+        feedback = `오답! 정답은 ${currentQuestion.answer} 입니다. 반응 시간: ${timeTaken} 초`;
+      }
+      document.getElementById('feedback').textContent = feedback;
+
+      records.push({
+        question: currentQuestion.text,
+        time: parseFloat(timeTaken)
+      });
+
+      questionCount++;
+      setTimeout(nextQuestion, 1000);
+    }
+
+    function endGame() {
+      records.sort((a, b) => b.time - a.time);
+      const topRecords = records.slice(0, 10);
+
+      let timestamp = new Date().toISOString().replace(/[-:T]/g, '').slice(0,14);
+
+      let html = `<h2>게임 종료! Top 10 느린 문제 (result_${timestamp})</h2>`;
+      html += `<table><tr><th>No</th><th>문제</th><th>시간(초)</th></tr>`;
+      topRecords.forEach((rec, idx) => {
+        html += `<tr><td>${idx+1}</td><td>${rec.question}</td><td>${rec.time.toFixed(2)}</td></tr>`;
+      });
+      html += `</table>`;
+
+      document.getElementById('game').style.display = 'none';
+      document.getElementById('result').innerHTML = html;
+    }
+  </script>
+</body>
+</html>
