@@ -37,6 +37,7 @@
   <!-- ✅ Firebase SDKs - compat version -->
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
 </head>
 
 <body>
@@ -85,7 +86,10 @@
       appId: "1:1058243373328:web:34abb2f10298317bdfdd95",
       measurementId: "G-7J1L8TSLB8"
     };
-
+    
+    //firestore DB 
+    const db = firebase.firestore();
+    
     firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
 
