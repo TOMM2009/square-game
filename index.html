@@ -2,18 +2,19 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8" />
-  <title>제곱수 끝장내기 ver1.3</title>
+  <title>제곱수 끝장내기 ver1.3 (Firebase Login)</title>
   <style>
     body {
       font-family: sans-serif;
-      padding: 20px;
       background-color: #f9f9f9;
+      padding: 20px;
     }
-    #game {
-      margin-top: 20px;
+    #loginForm, #game, #signupForm {
+      display: none;
     }
-    input {
+    input, button {
       font-size: 16px;
+      margin: 5px;
     }
     table {
       border-collapse: collapse;
@@ -29,41 +30,132 @@
       background-color: #eee;
     }
   </style>
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/10.3.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.3.0/firebase-auth.js"></script>
 </head>
 <body>
-  <h1>제곱수 끝장내기 ver1.3</h1>
-  <div id="start">
-    <p>게임 시작할까요? (yes 입력)</p>
-    <input type="text" id="startInput" />
-    <button onclick="startGame()">Start</button>
+  <h1>제곱수 끝장내기 ver1.3 (Firebase Login)</h1>
+
+  <!-- 로그인 폼 -->
+  <div id="loginForm">
+    <p><strong>로그인</strong></p>
+    <input type="email" id="loginEmail" placeholder="이메일" /><br />
+    <input type="password" id="loginPassword" placeholder="비밀번호" /><br />
+    <button onclick="login()">로그인</button>
+    <button onclick="showSignup()">회원가입</button>
+    <p id="loginMsg"></p>
   </div>
 
-  <div id="game" style="display:none;">
-    <div id="question"></div>
+  <!-- 회원가입 폼 -->
+  <div id="signupForm">
+    <p><strong>회원가입</strong></p>
+    <input type="email" id="signupEmail" placeholder="이메일" /><br />
+    <input type="password" id="signupPassword" placeholder="비밀번호" /><br />
+    <button onclick="signup()">회원가입 완료</button>
+    <button onclick="showLogin()">돌아가기</button>
+    <p id="signupMsg"></p>
+  </div>
+
+  <!-- 게임 화면 -->
+  <div id="game">
+    <p id="welcome"></p>
+    <div id="gameArea"></div>
     <input type="text" id="answerInput" />
     <button onclick="submitAnswer()">제출</button>
-    <div id="feedback"></div>
+    <p id="feedback"></p>
+    <button onclick="logout()">로그아웃</button>
   </div>
 
   <div id="result"></div>
 
   <script>
-    const excluded = [11, 13, 20, 30];
+    // ⭐️ 여기에 Firebase 콘솔에서 복사한 config 넣으세요 ⭐️
+    const firebaseConfig = {
+      apiKey: "YOUR_API_KEY",
+      authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+      projectId: "YOUR_PROJECT_ID",
+      storageBucket: "YOUR_PROJECT_ID.appspot.com",
+      messagingSenderId: "YOUR_SENDER_ID",
+      appId: "YOUR_APP_ID"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+
+    // 앱 시작하면 로그인 폼 보여주기
+    document.getElementById("loginForm").style.display = "block";
+
+    // 로그인 처리
+    function login() {
+      const email = document.getElementById("loginEmail").value;
+      const password = document.getElementById("loginPassword").value;
+
+      auth.signInWithEmailAndPassword(email, password)
+        .then(userCredential => {
+          document.getElementById("loginMsg").textContent = "";
+          startGame(userCredential.user);
+        })
+        .catch(error => {
+          document.getElementById("loginMsg").textContent = error.message;
+        });
+    }
+
+    // 회원가입 처리
+    function signup() {
+      const email = document.getElementById("signupEmail").value;
+      const password = document.getElementById("signupPassword").value;
+
+      auth.createUserWithEmailAndPassword(email, password)
+        .then(userCredential => {
+          document.getElementById("signupMsg").textContent = "회원가입 성공! 로그인 해주세요.";
+          showLogin();
+        })
+        .catch(error => {
+          document.getElementById("signupMsg").textContent = error.message;
+        });
+    }
+
+    function showSignup() {
+      document.getElementById("loginForm").style.display = "none";
+      document.getElementById("signupForm").style.display = "block";
+    }
+
+    function showLogin() {
+      document.getElementById("signupForm").style.display = "none";
+      document.getElementById("loginForm").style.display = "block";
+    }
+
+    function logout() {
+      auth.signOut().then(() => {
+        document.getElementById("game").style.display = "none";
+        document.getElementById("loginForm").style.display = "block";
+      });
+    }
+
+    function startGame(user) {
+      document.getElementById("loginForm").style.display = "none";
+      document.getElementById("signupForm").style.display = "none";
+      document.getElementById("game").style.display = "block";
+      document.getElementById("welcome").textContent = `환영합니다, ${user.email}님!`;
+
+      gameInit();
+    }
+
+    // -------------------------------
+    // 제곱수 끝장내기 ver1.3 로직
+    // -------------------------------
+    let excluded = [11, 13, 20, 30];
     let questionCount = 0;
-    const totalQuestions = 20;
+    let totalQuestions = 20;
     let records = [];
     let currentQuestion = null;
     let startTime = null;
 
-    function startGame() {
-      const input = document.getElementById('startInput').value.trim();
-      if (input.toLowerCase() === 'yes') {
-        document.getElementById('start').style.display = 'none';
-        document.getElementById('game').style.display = 'block';
-        nextQuestion();
-      } else {
-        alert('게임을 종료합니다.');
-      }
+    function gameInit() {
+      questionCount = 0;
+      records = [];
+      nextQuestion();
     }
 
     function nextQuestion() {
@@ -92,16 +184,16 @@
         };
       }
 
-      document.getElementById('question').textContent =
+      document.getElementById("gameArea").textContent =
         `[${questionCount + 1}번 문제] ${currentQuestion.text}`;
-      document.getElementById('answerInput').value = '';
-      document.getElementById('feedback').textContent = '';
+      document.getElementById("answerInput").value = '';
+      document.getElementById("feedback").textContent = '';
 
       startTime = performance.now();
     }
 
     function submitAnswer() {
-      const input = document.getElementById('answerInput').value.trim();
+      const input = document.getElementById("answerInput").value.trim();
       const userAnswer = Number(input);
       const endTime = performance.now();
       const timeTaken = ((endTime - startTime) / 1000).toFixed(2);
@@ -112,7 +204,7 @@
       } else {
         feedback = `오답! 정답은 ${currentQuestion.answer} 입니다. 반응 시간: ${timeTaken} 초`;
       }
-      document.getElementById('feedback').textContent = feedback;
+      document.getElementById("feedback").textContent = feedback;
 
       records.push({
         question: currentQuestion.text,
@@ -128,7 +220,6 @@
       const topRecords = records.slice(0, 10);
 
       let timestamp = new Date().toISOString().replace(/[-:T]/g, '').slice(0,14);
-
       let html = `<h2>게임 종료! Top 10 느린 문제 (result_${timestamp})</h2>`;
       html += `<table><tr><th>No</th><th>문제</th><th>시간(초)</th></tr>`;
       topRecords.forEach((rec, idx) => {
@@ -136,8 +227,8 @@
       });
       html += `</table>`;
 
-      document.getElementById('game').style.display = 'none';
-      document.getElementById('result').innerHTML = html;
+      document.getElementById("game").style.display = "none";
+      document.getElementById("result").innerHTML = html;
     }
   </script>
 </body>
