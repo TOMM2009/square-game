@@ -62,7 +62,25 @@
     <button onclick="showLogin()">돌아가기</button>
     <p id="signupMsg"></p>
   </div>
+  
+  <input type="text" id="signupName" placeholder="이름" /><br />
 
+  <select id="signupGrade">
+    <option value="">학년 선택</option>
+    <option value="초1">초1</option>
+    <option value="초2">초2</option>
+    <option value="초3">초3</option>
+    <option value="초4">초4</option>
+    <option value="초5">초5</option>
+    <option value="초6">초6</option>
+    <option value="중1">중1</option>
+    <option value="중2">중2</option>
+    <option value="중3">중3</option>
+    <option value="고1">고1</option>
+    <option value="고2">고2</option>
+    <option value="고3">고3</option>
+  </select><br />
+  
   <!-- 게임 화면 -->
   <div id="game">
     <p id="welcome"></p>
@@ -103,23 +121,64 @@
     function login() {
       const email = document.getElementById("loginEmail").value;
       const password = document.getElementById("loginPassword").value;
-
+    
       auth.signInWithEmailAndPassword(email, password)
         .then(userCredential => {
-          document.getElementById("loginMsg").textContent = "";
-          startGame(userCredential.user);
+          const user = userCredential.user;
+    
+          // Firestore에서 loginCount 가져오기
+          const userDocRef = db.collection("users").doc(user.uid);
+    
+          return userDocRef.get().then(docSnapshot => {
+            let newCount = 1;
+            if (docSnapshot.exists) {
+              const data = docSnapshot.data();
+              newCount = (data.loginCount || 0) + 1;
+            }
+    
+            return userDocRef.update({
+              loginCount: newCount
+            });
+          }).then(() => {
+            document.getElementById("loginMsg").textContent = "";
+            startGame(user);
+          });
         })
         .catch(error => {
           document.getElementById("loginMsg").textContent = error.message;
         });
     }
 
-    function signup() {
+     function signup() {
       const email = document.getElementById("signupEmail").value;
       const password = document.getElementById("signupPassword").value;
-
+      const name = document.getElementById("signupName").value;
+      const grade = document.getElementById("signupGrade").value;
+    
+      if (!name || !grade) {
+        document.getElementById("signupMsg").textContent = "이름과 학년을 입력해주세요.";
+        return;
+      }
+    
       auth.createUserWithEmailAndPassword(email, password)
         .then(userCredential => {
+          const user = userCredential.user;
+    
+          // Firestore 문서 생성
+          return db.collection("users").doc(user.uid).set({
+            uid: user.uid,
+            email: email,
+            name: name,
+            grade: grade,
+            loginCount: 0,
+            bestTime: null,
+            avgTime: null,
+            recentTimes: [],
+            top10Slow: [],
+            top10Fast: []
+          });
+        })
+        .then(() => {
           document.getElementById("signupMsg").textContent = "회원가입 성공! 로그인 해주세요.";
           showLogin();
         })
