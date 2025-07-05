@@ -8,6 +8,7 @@
       font-family: sans-serif;
       background-color: #f9f9f9;
       padding: 20px;
+      margin: 0;
     }
     #loginForm, #game, #signupForm {
       display: none;
@@ -15,7 +16,7 @@
       opacity: 0;
       transition: opacity 0.3s ease;
     }
-    input, button {
+    input, button, select {
       font-size: 16px;
       margin: 5px;
     }
@@ -32,9 +33,25 @@
     th {
       background-color: #eee;
     }
+    #logoutBtn {
+      display: none;
+      position: fixed;
+      top: 10px;
+      right: 10px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      padding: 8px 12px;
+      border-radius: 4px;
+      cursor: pointer;
+      z-index: 1000;
+    }
+    #logoutBtn:hover {
+      background-color: #0056b3;
+    }
   </style>
 
-  <!-- ✅ Firebase SDKs - compat version -->
+  <!-- Firebase SDKs -->
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
@@ -42,6 +59,8 @@
 
 <body>
   <h1>제곱수 끝장내기 ver1.3 (Firebase Login)</h1>
+
+  <button id="logoutBtn" onclick="logout()">로그아웃</button>
 
   <!-- 로그인 폼 -->
   <div id="loginForm">
@@ -56,31 +75,29 @@
   <!-- 회원가입 폼 -->
   <div id="signupForm">
     <p><strong>회원가입</strong></p>
+    <input type="text" id="signupName" placeholder="이름" /><br />
+    <select id="signupGrade">
+      <option value="">학년 선택</option>
+      <option value="초1">초1</option>
+      <option value="초2">초2</option>
+      <option value="초3">초3</option>
+      <option value="초4">초4</option>
+      <option value="초5">초5</option>
+      <option value="초6">초6</option>
+      <option value="중1">중1</option>
+      <option value="중2">중2</option>
+      <option value="중3">중3</option>
+      <option value="고1">고1</option>
+      <option value="고2">고2</option>
+      <option value="고3">고3</option>
+    </select><br />
     <input type="email" id="signupEmail" placeholder="이메일" /><br />
     <input type="password" id="signupPassword" placeholder="비밀번호" /><br />
     <button onclick="signup()">회원가입 완료</button>
     <button onclick="showLogin()">돌아가기</button>
     <p id="signupMsg"></p>
   </div>
-  
-  <input type="text" id="signupName" placeholder="이름" /><br />
 
-  <select id="signupGrade">
-    <option value="">학년 선택</option>
-    <option value="초1">초1</option>
-    <option value="초2">초2</option>
-    <option value="초3">초3</option>
-    <option value="초4">초4</option>
-    <option value="초5">초5</option>
-    <option value="초6">초6</option>
-    <option value="중1">중1</option>
-    <option value="중2">중2</option>
-    <option value="중3">중3</option>
-    <option value="고1">고1</option>
-    <option value="고2">고2</option>
-    <option value="고3">고3</option>
-  </select><br />
-  
   <!-- 게임 화면 -->
   <div id="game">
     <p id="welcome"></p>
@@ -88,13 +105,11 @@
     <input type="text" id="answerInput" />
     <button onclick="submitAnswer()">제출</button>
     <p id="feedback"></p>
-    <button onclick="logout()">로그아웃</button>
   </div>
 
   <div id="result"></div>
 
   <script>
-    // ✅ 대장님 Firebase Config
     const firebaseConfig = {
       apiKey: "AIzaSyAZXpK17unJu2uA_QaWr9F2aXTcqK6M6RI",
       authDomain: "square-game-t2009.firebaseapp.com",
@@ -104,38 +119,48 @@
       appId: "1:1058243373328:web:34abb2f10298317bdfdd95",
       measurementId: "G-7J1L8TSLB8"
     };
-    
-    //firestore DB 
-    const db = firebase.firestore();
-    
+
     firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
+    const db = firebase.firestore();
 
     window.onload = function() {
-      const loginForm = document.getElementById("loginForm");
-      loginForm.style.display = "block";
-      loginForm.style.visibility = "visible";
-      loginForm.style.opacity = "1";
+      auth.onAuthStateChanged(user => {
+        if (user) {
+          startGame(user);
+        } else {
+          showLoginForm();
+        }
+      });
     };
+
+    function showLoginForm() {
+      document.getElementById("loginForm").style.display = "block";
+      document.getElementById("loginForm").style.visibility = "visible";
+      document.getElementById("loginForm").style.opacity = "1";
+
+      document.getElementById("signupForm").style.display = "none";
+      document.getElementById("game").style.display = "none";
+      document.getElementById("logoutBtn").style.display = "none";
+      document.getElementById("result").innerHTML = "";
+    }
 
     function login() {
       const email = document.getElementById("loginEmail").value;
       const password = document.getElementById("loginPassword").value;
-    
+
       auth.signInWithEmailAndPassword(email, password)
         .then(userCredential => {
           const user = userCredential.user;
-    
-          // Firestore에서 loginCount 가져오기
+
           const userDocRef = db.collection("users").doc(user.uid);
-    
           return userDocRef.get().then(docSnapshot => {
             let newCount = 1;
             if (docSnapshot.exists) {
               const data = docSnapshot.data();
               newCount = (data.loginCount || 0) + 1;
             }
-    
+
             return userDocRef.update({
               loginCount: newCount
             });
@@ -149,22 +174,21 @@
         });
     }
 
-     function signup() {
+    function signup() {
       const email = document.getElementById("signupEmail").value;
       const password = document.getElementById("signupPassword").value;
       const name = document.getElementById("signupName").value;
       const grade = document.getElementById("signupGrade").value;
-    
+
       if (!name || !grade) {
         document.getElementById("signupMsg").textContent = "이름과 학년을 입력해주세요.";
         return;
       }
-    
+
       auth.createUserWithEmailAndPassword(email, password)
         .then(userCredential => {
           const user = userCredential.user;
-    
-          // Firestore 문서 생성
+
           return db.collection("users").doc(user.uid).set({
             uid: user.uid,
             email: email,
@@ -173,142 +197,3 @@
             loginCount: 0,
             bestTime: null,
             avgTime: null,
-            recentTimes: [],
-            top10Slow: [],
-            top10Fast: []
-          });
-        })
-        .then(() => {
-          document.getElementById("signupMsg").textContent = "회원가입 성공! 로그인 해주세요.";
-          showLogin();
-        })
-        .catch(error => {
-          document.getElementById("signupMsg").textContent = error.message;
-        });
-    }
-
-    function showSignup() {
-      document.getElementById("loginForm").style.display = "none";
-      document.getElementById("signupForm").style.display = "block";
-      document.getElementById("signupForm").style.visibility = "visible";
-      document.getElementById("signupForm").style.opacity = "1";
-    }
-
-    function showLogin() {
-      document.getElementById("signupForm").style.display = "none";
-      document.getElementById("loginForm").style.display = "block";
-      document.getElementById("loginForm").style.visibility = "visible";
-      document.getElementById("loginForm").style.opacity = "1";
-    }
-
-    function logout() {
-      auth.signOut().then(() => {
-        document.getElementById("game").style.display = "none";
-        document.getElementById("loginForm").style.display = "block";
-      });
-    }
-
-    // ===============================
-    // 제곱수 끝장내기 ver1.3 로직
-    // ===============================
-
-    let excluded = [11, 13, 20, 30];
-    let questionCount = 0;
-    let totalQuestions = 20;
-    let records = [];
-    let currentQuestion = null;
-    let startTime = null;
-
-    function startGame(user) {
-      document.getElementById("loginForm").style.display = "none";
-      document.getElementById("signupForm").style.display = "none";
-      document.getElementById("game").style.display = "block";
-      document.getElementById("game").style.visibility = "visible";
-      document.getElementById("game").style.opacity = "1";
-
-      document.getElementById("welcome").textContent = `환영합니다, ${user.email}님!`;
-
-      gameInit();
-    }
-
-    function gameInit() {
-      questionCount = 0;
-      records = [];
-      nextQuestion();
-    }
-
-    function nextQuestion() {
-      if (questionCount >= totalQuestions) {
-        endGame();
-        return;
-      }
-
-      let num;
-      do {
-        num = Math.floor(Math.random() * (32 - 11 + 1)) + 11;
-      } while (excluded.includes(num));
-
-      const direction = Math.random() < 0.5 ? 'forward' : 'reverse';
-
-      if (direction === 'forward') {
-        const square = num * num;
-        currentQuestion = {
-          text: `?² = ${square}`,
-          answer: num
-        };
-      } else {
-        currentQuestion = {
-          text: `${num}² = ?`,
-          answer: num * num
-        };
-      }
-
-      document.getElementById("gameArea").textContent =
-        `[${questionCount + 1}번 문제] ${currentQuestion.text}`;
-      document.getElementById("answerInput").value = '';
-      document.getElementById("feedback").textContent = '';
-
-      startTime = performance.now();
-    }
-
-    function submitAnswer() {
-      const input = document.getElementById("answerInput").value.trim();
-      const userAnswer = Number(input);
-      const endTime = performance.now();
-      const timeTaken = ((endTime - startTime) / 1000).toFixed(2);
-
-      let feedback = '';
-      if (userAnswer === currentQuestion.answer) {
-        feedback = `정답! 반응 시간: ${timeTaken} 초`;
-      } else {
-        feedback = `오답! 정답은 ${currentQuestion.answer} 입니다. 반응 시간: ${timeTaken} 초`;
-      }
-      document.getElementById("feedback").textContent = feedback;
-
-      records.push({
-        question: currentQuestion.text,
-        time: parseFloat(timeTaken)
-      });
-
-      questionCount++;
-      setTimeout(nextQuestion, 1000);
-    }
-
-    function endGame() {
-      records.sort((a, b) => b.time - a.time);
-      const topRecords = records.slice(0, 10);
-
-      let timestamp = new Date().toISOString().replace(/[-:T]/g, '').slice(0,14);
-      let html = `<h2>게임 종료! Top 10 느린 문제 (result_${timestamp})</h2>`;
-      html += `<table><tr><th>No</th><th>문제</th><th>시간(초)</th></tr>`;
-      topRecords.forEach((rec, idx) => {
-        html += `<tr><td>${idx+1}</td><td>${rec.question}</td><td>${rec.time.toFixed(2)}</td></tr>`;
-      });
-      html += `</table>`;
-
-      document.getElementById("game").style.display = "none";
-      document.getElementById("result").innerHTML = html;
-    }
-  </script>
-</body>
-</html>
