@@ -11,6 +11,9 @@
     }
     #loginForm, #game, #signupForm {
       display: none;
+      visibility: hidden;
+      opacity: 0;
+      transition: opacity 0.3s ease;
     }
     input, button {
       font-size: 16px;
@@ -30,10 +33,12 @@
       background-color: #eee;
     }
   </style>
-  <!-- Firebase SDKs -->
-  <script src="https://www.gstatic.com/firebasejs/10.3.0/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.3.0/firebase-auth.js"></script>
+
+  <!-- ✅ Firebase SDKs - compat version -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
 </head>
+
 <body>
   <h1>제곱수 끝장내기 ver1.3 (Firebase Login)</h1>
 
@@ -70,31 +75,27 @@
   <div id="result"></div>
 
   <script>
-    // ⭐️ 여기에 Firebase 콘솔에서 복사한 config 넣으세요 ⭐️
+    // ✅ 대장님 Firebase Config
     const firebaseConfig = {
       apiKey: "AIzaSyAZXpK17unJu2uA_QaWr9F2aXTcqK6M6RI",
-  authDomain: "square-game-t2009.firebaseapp.com",
-  projectId: "square-game-t2009",
-  //storageBucket: "square-game-t2009.appspot.com",
-      storageBucket: "square-game-t2009.firebasestorage.app",
-  messagingSenderId: "1058243373328",
-  appId: "1:1058243373328:web:34abb2f10298317bdfdd95",
-  measurementId: "G-7J1L8TSLB8"
+      authDomain: "square-game-t2009.firebaseapp.com",
+      projectId: "square-game-t2009",
+      storageBucket: "square-game-t2009.appspot.com",
+      messagingSenderId: "1058243373328",
+      appId: "1:1058243373328:web:34abb2f10298317bdfdd95",
+      measurementId: "G-7J1L8TSLB8"
     };
 
     firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
 
-    // 앱 시작하면 로그인 폼 보여주기
-   window.onload = function() {
-  const loginForm = document.getElementById("loginForm");
-  loginForm.style.display = "block";
-  loginForm.style.visibility = "visible";
-  loginForm.style.opacity = "1";
-};
-   
+    window.onload = function() {
+      const loginForm = document.getElementById("loginForm");
+      loginForm.style.display = "block";
+      loginForm.style.visibility = "visible";
+      loginForm.style.opacity = "1";
+    };
 
-    // 로그인 처리
     function login() {
       const email = document.getElementById("loginEmail").value;
       const password = document.getElementById("loginPassword").value;
@@ -109,7 +110,6 @@
         });
     }
 
-    // 회원가입 처리
     function signup() {
       const email = document.getElementById("signupEmail").value;
       const password = document.getElementById("signupPassword").value;
@@ -127,11 +127,15 @@
     function showSignup() {
       document.getElementById("loginForm").style.display = "none";
       document.getElementById("signupForm").style.display = "block";
+      document.getElementById("signupForm").style.visibility = "visible";
+      document.getElementById("signupForm").style.opacity = "1";
     }
 
     function showLogin() {
       document.getElementById("signupForm").style.display = "none";
       document.getElementById("loginForm").style.display = "block";
+      document.getElementById("loginForm").style.visibility = "visible";
+      document.getElementById("loginForm").style.opacity = "1";
     }
 
     function logout() {
@@ -141,24 +145,28 @@
       });
     }
 
-    function startGame(user) {
-      document.getElementById("loginForm").style.display = "none";
-      document.getElementById("signupForm").style.display = "none";
-      document.getElementById("game").style.display = "block";
-      document.getElementById("welcome").textContent = `환영합니다, ${user.email}님!`;
-
-      gameInit();
-    }
-
-    // -------------------------------
+    // ===============================
     // 제곱수 끝장내기 ver1.3 로직
-    // -------------------------------
+    // ===============================
+
     let excluded = [11, 13, 20, 30];
     let questionCount = 0;
     let totalQuestions = 20;
     let records = [];
     let currentQuestion = null;
     let startTime = null;
+
+    function startGame(user) {
+      document.getElementById("loginForm").style.display = "none";
+      document.getElementById("signupForm").style.display = "none";
+      document.getElementById("game").style.display = "block";
+      document.getElementById("game").style.visibility = "visible";
+      document.getElementById("game").style.opacity = "1";
+
+      document.getElementById("welcome").textContent = `환영합니다, ${user.email}님!`;
+
+      gameInit();
+    }
 
     function gameInit() {
       questionCount = 0;
