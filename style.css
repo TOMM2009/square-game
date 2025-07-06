@@ -134,20 +134,21 @@
       color: #00462A;
     }
     .question-wrapper {
-      position: relative;
-      display: inline-block;
-      min-width: 160px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 160px;
     }
+    
     #timer {
-      position: absolute;
-      right: 0;
-      top: 0;
+      position: static;
       font-family: monospace;
       font-weight: bold;
       color: #d9b569;
       font-size: 2em;
       text-shadow: 1px 1px 2px #333;
     }
+
 
 
     #questionText {
