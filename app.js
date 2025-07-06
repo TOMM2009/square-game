@@ -17,12 +17,45 @@
   window.onload = function () {
     auth.onAuthStateChanged(user => {
       if (user) {
-        startGame(user);
+        const saved = localStorage.getItem("squareGameState");
+  
+        if (saved) {
+          const state = JSON.parse(saved);
+  
+          currentUser = user;
+          questionCount = state.questionCount;
+          currentQuestion = state.currentQuestion;
+          records = state.records || [];
+          startTime = state.startTime;
+  
+          document.getElementById("loginForm").style.display = "none";
+          document.getElementById("signupForm").style.display = "none";
+          document.getElementById("game").style.display = "block";
+          document.getElementById("logoutBtn").style.display = "block";
+  
+          document.getElementById("welcome").textContent =
+            `더원매쓰의 용사, ${state.user?.email || user.email}님 파이팅!!!`;
+  
+          document.getElementById("questionNumber").textContent =
+            `[${questionCount + 1}번 문제]`;
+  
+          document.getElementById("questionText").textContent =
+            currentQuestion.text;
+  
+          document.getElementById("answerInput").value = '';
+          document.getElementById("feedback").textContent = '';
+  
+          adjustFontSize('.question-text');
+  
+        } else {
+          startGame(user, user.email);
+        }
       } else {
         showLoginForm();
       }
     });
   };
+
 
   function showLoginForm() {
     document.getElementById("loginForm").style.display = "block";
@@ -185,6 +218,7 @@
   }
 
   function logout() {
+    localStorage.removeItem("squareGameState");
     auth.signOut().then(() => {
       document.getElementById("adminPage").innerHTML = "";
       document.getElementById("adminPage").style.display = "none";
@@ -311,6 +345,7 @@
   }
 
   function endGame() {
+    localStorage.removeItem("squareGameState");
     records.sort((a, b) => b.time - a.time);
     const topRecords = records.slice(0, 10);
 
