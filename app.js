@@ -285,8 +285,11 @@
       };
     }
 
-    document.getElementById("questionNumber").textContent =
+    document.getElementById("questionNumberText").textContent =
       `[${questionCount + 1}번 문제]`;
+
+    startTimer();
+
 
     document.getElementById("questionText").textContent =
       currentQuestion.text;
@@ -345,6 +348,7 @@
 
     questionCount++;
     setTimeout(nextQuestion, 1000);
+    stopTimer();
   }
 
   function endGame() {
@@ -372,6 +376,7 @@
 
     document.getElementById("game").style.display = "none";
     document.getElementById("result").innerHTML = html;
+    stopTimer();
   }
 
   function restartGame() {
