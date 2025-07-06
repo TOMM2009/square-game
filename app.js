@@ -329,7 +329,10 @@ function startTimer(savedElapsedTime = 0) {
 
   timerInterval = setInterval(() => {
     const now = performance.now();
-    const elapsed = (now - timerStartTime) / 1000;
+    let elapsed = (now - timerStartTime) / 1000;
+
+    // 99.99 초로 잘라버리기
+    elapsed = Math.min(elapsed, MAX_SECONDS);
 
     const seconds = Math.floor(elapsed);
     const centiseconds = Math.floor((elapsed * 100) % 100);
@@ -343,9 +346,11 @@ function startTimer(savedElapsedTime = 0) {
     if (elapsed >= MAX_SECONDS) {
       clearInterval(timerInterval);
       handleTimeout();
+      return;
     }
   }, 10);
 }
+
 
 
 function stopTimer() {
