@@ -465,3 +465,45 @@
       elem.style.fontSize = fontSize + 'px';
     }
   }
+  let timerInterval = null;
+  let timerStartTime = null;
+  
+  function startTimer() {
+    timerStartTime = performance.now();
+    clearInterval(timerInterval);
+  
+    timerInterval = setInterval(() => {
+      const now = performance.now();
+      const elapsed = (now - timerStartTime) / 1000;
+  
+      if (elapsed >= 99.99) {
+        clearInterval(timerInterval);
+        handleTimeout();
+        return;
+      }
+  
+      const seconds = Math.floor(elapsed);
+      const centiseconds = Math.floor((elapsed * 100) % 100);
+  
+      const formatted =
+        String(seconds).padStart(2, "0") + ":" +
+        String(centiseconds).padStart(2, "0");
+  
+      document.getElementById("timer").textContent = formatted;
+  
+    }, 10);
+  }
+  
+  function stopTimer() {
+    clearInterval(timerInterval);
+    document.getElementById("timer").textContent = "";
+  }
+  
+  function handleTimeout() {
+    document.getElementById("feedback").textContent =
+      `시간 초과! 정답은 ${currentQuestion.answer} 입니다.`;
+  
+    questionCount++;
+    setTimeout(nextQuestion, 1000);
+  }
+
