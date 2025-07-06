@@ -60,8 +60,10 @@ window.onload = function () {
         document.getElementById("welcome").dataset.username =
           state.user?.name || "용사";
 
+        const num = (questionCount + 1).toString().padStart(2, "0");
         document.getElementById("questionNumberText").textContent =
-          `[${questionCount + 1}번 문제]`;
+          `[${num}번 문제]`;
+
 
         document.getElementById("questionText").textContent =
           currentQuestion.text;
