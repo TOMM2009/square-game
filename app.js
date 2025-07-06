@@ -14,47 +14,50 @@
   const auth = firebase.auth();
   const db = firebase.firestore();
 
-  window.onload = function () {
-    auth.onAuthStateChanged(user => {
-      if (user) {
-        const saved = localStorage.getItem("squareGameState");
+ window.onload = function () {
+  auth.onAuthStateChanged(user => {
+    if (user) {
+      const saved = localStorage.getItem("squareGameState");
   
-        if (saved) {
-          const state = JSON.parse(saved);
+      if (saved) {
+        const state = JSON.parse(saved);
   
-          currentUser = user;
-          questionCount = state.questionCount;
-          currentQuestion = state.currentQuestion;
-          records = state.records || [];
-          startTime = state.startTime;
+        currentUser = user;
+        questionCount = state.questionCount;
+        currentQuestion = state.currentQuestion;
+        records = state.records || [];
+        startTime = state.startTime;
   
-          document.getElementById("loginForm").style.display = "none";
-          document.getElementById("signupForm").style.display = "none";
-          document.getElementById("game").style.display = "block";
-          document.getElementById("logoutBtn").style.display = "block";
+        document.getElementById("loginForm").style.display = "none";
+        document.getElementById("signupForm").style.display = "none";
+        document.getElementById("game").style.display = "block";
+        document.getElementById("logoutBtn").style.display = "block";
   
-          document.getElementById("welcome").textContent =
-            `더원매쓰의 용사, ${state.user?.email || user.email}님 파이팅!!!`;
+        document.getElementById("welcome").textContent =
+          `더원매쓰의 용사, ${state.user?.email || user.email}님 파이팅!!!`;
   
-          document.getElementById("questionNumber").textContent =
-            `[${questionCount + 1}번 문제]`;
+        document.getElementById("questionNumber").textContent =
+          `[${questionCount + 1}번 문제]`;
   
-          document.getElementById("questionText").textContent =
-            currentQuestion.text;
+        document.getElementById("questionText").textContent =
+          currentQuestion.text;
   
-          document.getElementById("answerInput").value = '';
-          document.getElementById("feedback").textContent = '';
+        document.getElementById("answerInput").value = '';
+        document.getElementById("feedback").textContent = '';
   
-          adjustFontSize('.question-text');
-  
-        } else {
-          startGame(user, user.email);
-        }
+        adjustFontSize('.question-text');
       } else {
-        showLoginForm();
+        startGame(user, user.email);
       }
-    });
-  };
+    } else {
+      showLoginForm();
+    }
+
+    // ✅ auth 체크 끝나면 화면 보이게
+    document.body.style.visibility = "visible";
+  });
+};
+
 
 
   function showLoginForm() {
