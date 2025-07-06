@@ -291,8 +291,9 @@ function nextQuestion() {
     };
   }
 
+  const numText = String(questionCount + 1).padStart(2, "0");
   document.getElementById("questionNumberText").textContent =
-    `[${questionCount + 1}번 문제]`;
+    `[${numText}번 문제]`;
 
   document.getElementById("questionText").textContent =
     currentQuestion.text;
@@ -319,6 +320,7 @@ function nextQuestion() {
     timestampSaved: Date.now()
   }));
 }
+
 
 function startTimer(savedElapsedTime = 0) {
   const MAX_SECONDS = 99.99;
