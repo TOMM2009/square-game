@@ -524,3 +524,9 @@ document.getElementById("loginPassword").addEventListener("keydown", function (e
     login();
   }
 });
+document.getElementById("loginEmail").addEventListener("keydown", function (event) {
+  if (event.key === "Enter") {
+    event.preventDefault();
+    document.getElementById("loginPassword").focus();
+  }
+});
