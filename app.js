@@ -331,12 +331,6 @@ function startTimer(savedElapsedTime = 0) {
     const now = performance.now();
     const elapsed = (now - timerStartTime) / 1000;
 
-    if (elapsed >= MAX_SECONDS) {
-      clearInterval(timerInterval);
-      handleTimeout();
-      return;
-    }
-
     const seconds = Math.floor(elapsed);
     const centiseconds = Math.floor((elapsed * 100) % 100);
 
@@ -346,8 +340,13 @@ function startTimer(savedElapsedTime = 0) {
 
     document.getElementById("timer").textContent = formatted;
 
+    if (elapsed >= MAX_SECONDS) {
+      clearInterval(timerInterval);
+      handleTimeout();
+    }
   }, 10);
 }
+
 
 function stopTimer() {
   clearInterval(timerInterval);
