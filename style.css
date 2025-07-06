@@ -118,7 +118,10 @@
     .game-box {
       text-align: center;
     }
-
+    #pageTitle {
+      display: block !important;
+      visibility: visible !important;
+    }
     #welcome {
       font-size: 18px;
       margin-bottom: 10px;
