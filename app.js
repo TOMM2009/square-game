@@ -260,6 +260,18 @@
     startTime = performance.now();
 
     adjustFontSize('.question-text');
+
+    // nextQuestion() 끝 부분에 추가
+    localStorage.setItem("squareGameState", JSON.stringify({
+      questionCount,
+      currentQuestion,
+      records,
+      startTime,
+      user: {
+        uid: currentUser?.uid,
+        email: currentUser?.email
+      }
+    }));
   }
 
   function submitAnswer() {
