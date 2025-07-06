@@ -39,7 +39,6 @@ window.onload = function () {
         records = state.records || [];
         startTime = state.startTime;
 
-        // calculate elapsed time
         const savedAt = state.timestampSaved || Date.now();
         const now = Date.now();
         const elapsedSinceSave = (now - savedAt) / 1000;
@@ -56,7 +55,10 @@ window.onload = function () {
         document.getElementById("logoutBtn").style.display = "block";
 
         document.getElementById("welcome").textContent =
-          `더원매쓰의 용사, ${state.user?.email || user.email}님 파이팅!!!`;
+          `더원매쓰의 용사, ${state.user?.name || "용사"}님 파이팅!!!`;
+
+        document.getElementById("welcome").dataset.username =
+          state.user?.name || "용사";
 
         document.getElementById("questionNumberText").textContent =
           `[${questionCount + 1}번 문제]`;
@@ -242,6 +244,8 @@ function logout() {
 function startGame(user, userName) {
   currentUser = user;
 
+  document.getElementById("welcome").dataset.username = userName;
+
   document.getElementById("loginForm").style.display = "none";
   document.getElementById("signupForm").style.display = "none";
   document.getElementById("game").style.display = "block";
@@ -307,7 +311,8 @@ function nextQuestion() {
     startTime,
     user: {
       uid: currentUser?.uid,
-      email: currentUser?.email
+      email: currentUser?.email,
+      name: document.getElementById("welcome").dataset.username || ""
     },
     timestampSaved: Date.now()
   }));
@@ -425,7 +430,7 @@ function endGame() {
 
 function restartGame() {
   document.getElementById("result").innerHTML = "";
-  startGame(currentUser);
+  startGame(currentUser, document.getElementById("welcome").dataset.username);
 }
 
 function viewUserDetail(uid) {
