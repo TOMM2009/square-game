@@ -2,80 +2,270 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8" />
-  <title>제곱수 끝장내기 ver1.3 (Firebase Login)</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>제곱수 끝장내기 ver2.5.2</title>
   <style>
     body {
-      font-family: sans-serif;
-      background-color: #f9f9f9;
-      padding: 20px;
+      font-family: 'Noto Sans KR', sans-serif;
+      background-color: #FFFDF1;
+      color: #333333;
       margin: 0;
+      padding: 20px;
+      position: relative;
+      min-height: 100vh;
+      z-index: 1;
     }
-    #loginForm, #game, #signupForm {
-      display: none;
-      visibility: hidden;
-      opacity: 0;
-      transition: opacity 0.3s ease;
+
+    body::before {
+      content: "";
+      position: fixed;
+      left: 20px;
+      bottom: 10px;
+      width: 200px;
+      height: 130px;
+      background-image: url('/tomm.logo-01.jpg');
+      background-repeat: no-repeat;
+      background-position: left bottom;
+      background-size: contain;
+      opacity: 0.8;
+      filter: grayscale(100%);
+      pointer-events: none;
+      z-index: 0;
     }
-    input, button, select {
+
+    h1 {
+      color: #00462A;
+      text-align: center;
+      margin-top: 30px;
+      font-weight: 700;
+    }
+
+    input, select {
+      border: 1px solid #B9B9B9;
+      border-radius: 4px;
+      padding: 10px;
       font-size: 16px;
-      margin: 5px;
+      width: 100%;
+      box-sizing: border-box;
+      margin-bottom: 10px;
     }
+
+    input:focus, select:focus {
+      border-color: #00462A;
+      box-shadow: 0 0 5px rgba(0,70,42,0.3);
+      outline: none;
+    }
+
+    button {
+      background-color: #00462A;
+      color: #fff;
+      border: none;
+      padding: 10px 20px;
+      font-size: 16px;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #003322;
+    }
+
+    #loginForm, #signupForm, #game, .admin-detail, #adminPage {
+      background-color: #fff;
+      border: 1px solid #B9B9B9;
+      border-radius: 8px;
+      padding: 30px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      max-width: 600px;
+      margin: 30px auto;
+      z-index: 2;
+      position: relative;
+    }
+
+    .button-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: center;
+    }
+
+    .button-row button {
+      flex: 1 1 auto;
+      min-width: 80px;
+    }
+
     table {
+      width: 100%;
       border-collapse: collapse;
       margin-top: 20px;
-      width: 100%;
     }
-    th, td {
-      border: 1px solid #333;
+
+    th {
+      background-color: #00462A;
+      color: #fff;
+      padding: 10px;
+    }
+
+    td {
+      border: 1px solid #B9B9B9;
       padding: 8px;
+      color: #333333;
+    }
+
+    tr:nth-child(even) {
+      background-color: #FFFDF1;
+    }
+
+    tr:hover {
+      background-color: #B9B9B9;
+      color: #fff;
+    }
+
+    .game-box {
       text-align: center;
     }
-    th {
-      background-color: #eee;
+
+    #welcome {
+      font-size: 18px;
+      margin-bottom: 10px;
+      color: #00462A;
     }
+
+    #questionNumber {
+      font-size: 18px;
+      margin-bottom: 20px;
+      color: #00462A;
+    }
+
+    #questionText {
+      font-size: 75px;
+      font-weight: 700;
+      color: #00462A;
+      margin-top: 0;
+      margin-bottom: 10px;
+    }
+
     #logoutBtn {
       display: none;
       position: fixed;
-      top: 10px;
-      right: 10px;
-      background-color: #007bff;
+      bottom: 20px;
+      right: 20px;
+      background-color: #00462A;
       color: white;
       border: none;
-      padding: 8px 12px;
+      padding: 10px 20px;
+      font-size: 16px;
       border-radius: 4px;
       cursor: pointer;
       z-index: 1000;
+      transition: background-color 0.3s ease;
     }
+
     #logoutBtn:hover {
       background-color: #0056b3;
     }
+
+    .question-text {
+      font-size: 64px;
+      color: #00462A;
+      font-weight: 700;
+      margin-bottom: 10px;
+      line-height: 1.2;
+      word-break: keep-all;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    #answerInput {
+      width: 100%;
+      font-size: 24px;
+      padding: 12px;
+      border: 2px solid #00462A;
+      border-radius: 6px;
+      margin-top: 5px;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    #answerInput:focus {
+      outline: none;
+      box-shadow: 0 0 8px rgba(0, 70, 42, 0.3);
+    }
+
+    #game button {
+      display: inline-block;
+      font-size: 20px;
+      padding: 12px 30px;
+      margin-top: 10px;
+    }
+
+    #feedback {
+      margin-top: 20px;
+      font-size: 18px;
+      color: #00462A;
+    }
+
+    .admin-detail h2 {
+      color: #00462A;
+      border-bottom: 2px solid #B9B9B9;
+      padding-bottom: 10px;
+      margin-bottom: 20px;
+    }
+
+    @media (max-width: 400px) {
+      .question-text {
+        font-size: 36px;
+      }
+      #answerInput {
+        font-size: 18px;
+        padding: 10px;
+      }
+      #game button {
+        font-size: 16px;
+        padding: 10px 20px;
+      }
+      #feedback {
+        font-size: 16px;
+      }
+      .button-row button {
+        font-size: 14px;
+        padding: 6px 8px;
+      }
+    }
   </style>
 
-  <!-- Firebase SDKs -->
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
 </head>
 
 <body>
-  <h1>제곱수 끝장내기 ver1.3 (Firebase Login)</h1>
+  <h1>제곱수 끝장내기 ver2.5.2</h1>
+
+  <div id="adminPage" style="display: none;">
+    <h2>🔑 관리자 페이지</h2>
+    <p>여기에 관리자 기능이 들어올 예정입니다.</p>
+    <button onclick="logout()">로그아웃</button>
+  </div>
 
   <button id="logoutBtn" onclick="logout()">로그아웃</button>
 
-  <!-- 로그인 폼 -->
   <div id="loginForm">
     <p><strong>로그인</strong></p>
-    <input type="email" id="loginEmail" placeholder="이메일" /><br />
-    <input type="password" id="loginPassword" placeholder="비밀번호" /><br />
-    <button onclick="login()">로그인</button>
-    <button onclick="showSignup()">회원가입</button>
+    <input type="email" id="loginEmail" placeholder="이메일" />
+    <input type="password" id="loginPassword" placeholder="비밀번호" />
+    <div class="button-row">
+      <button onclick="login()">로그인</button>
+      <button onclick="showSignup()">회원가입</button>
+      <button onclick="resetPassword()">비밀번호 재설정</button>
+    </div>
     <p id="loginMsg"></p>
   </div>
 
-  <!-- 회원가입 폼 -->
-  <div id="signupForm">
+  <div id="signupForm" style="display:none;">
     <p><strong>회원가입</strong></p>
-    <input type="text" id="signupName" placeholder="이름" /><br />
+    <input type="text" id="signupName" placeholder="이름" maxlength="7" />
     <select id="signupGrade">
       <option value="">학년 선택</option>
       <option value="초1">초1</option>
@@ -90,110 +280,30 @@
       <option value="고1">고1</option>
       <option value="고2">고2</option>
       <option value="고3">고3</option>
-    </select><br />
-    <input type="email" id="signupEmail" placeholder="이메일" /><br />
-    <input type="password" id="signupPassword" placeholder="비밀번호" /><br />
+    </select>
+    <input type="email" id="signupEmail" placeholder="이메일" />
+    <input type="password" id="signupPassword" placeholder="비밀번호" />
     <button onclick="signup()">회원가입 완료</button>
     <button onclick="showLogin()">돌아가기</button>
     <p id="signupMsg"></p>
   </div>
 
-  <!-- 게임 화면 -->
-  <div id="game">
-    <p id="welcome"></p>
-    <div id="gameArea"></div>
-    <input type="text" id="answerInput" />
-    <button onclick="submitAnswer()">제출</button>
-    <p id="feedback"></p>
+  <div id="game" style="display:none;">
+    <div class="game-box">
+      <p id="welcome"></p>
+      <div id="gameArea" class="question-text">
+        <p id="questionNumber"></p>
+        <p id="questionText"></p>
+      </div>
+      <input type="text" id="answerInput" placeholder="정답을 입력하세요" />
+      <button onclick="submitAnswer()">제출</button>
+      <p id="feedback"></p>
+    </div>
   </div>
 
   <div id="result"></div>
 
-  <script>
-    const firebaseConfig = {
-      apiKey: "AIzaSyAZXpK17unJu2uA_QaWr9F2aXTcqK6M6RI",
-      authDomain: "square-game-t2009.firebaseapp.com",
-      projectId: "square-game-t2009",
-      storageBucket: "square-game-t2009.appspot.com",
-      messagingSenderId: "1058243373328",
-      appId: "1:1058243373328:web:34abb2f10298317bdfdd95",
-      measurementId: "G-7J1L8TSLB8"
-    };
 
-    firebase.initializeApp(firebaseConfig);
-    const auth = firebase.auth();
-    const db = firebase.firestore();
 
-    window.onload = function() {
-      auth.onAuthStateChanged(user => {
-        if (user) {
-          startGame(user);
-        } else {
-          showLoginForm();
-        }
-      });
-    };
-
-    function showLoginForm() {
-      document.getElementById("loginForm").style.display = "block";
-      document.getElementById("loginForm").style.visibility = "visible";
-      document.getElementById("loginForm").style.opacity = "1";
-
-      document.getElementById("signupForm").style.display = "none";
-      document.getElementById("game").style.display = "none";
-      document.getElementById("logoutBtn").style.display = "none";
-      document.getElementById("result").innerHTML = "";
-    }
-
-    function login() {
-      const email = document.getElementById("loginEmail").value;
-      const password = document.getElementById("loginPassword").value;
-
-      auth.signInWithEmailAndPassword(email, password)
-        .then(userCredential => {
-          const user = userCredential.user;
-
-          const userDocRef = db.collection("users").doc(user.uid);
-          return userDocRef.get().then(docSnapshot => {
-            let newCount = 1;
-            if (docSnapshot.exists) {
-              const data = docSnapshot.data();
-              newCount = (data.loginCount || 0) + 1;
-            }
-
-            return userDocRef.update({
-              loginCount: newCount
-            });
-          }).then(() => {
-            document.getElementById("loginMsg").textContent = "";
-            startGame(user);
-          });
-        })
-        .catch(error => {
-          document.getElementById("loginMsg").textContent = error.message;
-        });
-    }
-
-    function signup() {
-      const email = document.getElementById("signupEmail").value;
-      const password = document.getElementById("signupPassword").value;
-      const name = document.getElementById("signupName").value;
-      const grade = document.getElementById("signupGrade").value;
-
-      if (!name || !grade) {
-        document.getElementById("signupMsg").textContent = "이름과 학년을 입력해주세요.";
-        return;
-      }
-
-      auth.createUserWithEmailAndPassword(email, password)
-        .then(userCredential => {
-          const user = userCredential.user;
-
-          return db.collection("users").doc(user.uid).set({
-            uid: user.uid,
-            email: email,
-            name: name,
-            grade: grade,
-            loginCount: 0,
-            bestTime: null,
-            avgTime: null,
+</body>
+</html>
