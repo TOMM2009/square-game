@@ -496,14 +496,6 @@ function viewUserDetail(uid) {
         `<p>에러 발생: ${error.message}</p>`;
     });
 }
-
-document.getElementById("answerInput").addEventListener("keydown", function (event) {
-  if (event.key === "Enter") {
-    event.preventDefault();
-    submitAnswer();
-  }
-});
-
 function adjustFontSize(selector, maxSize = 64, minSize = 20, step = 2) {
   const elem = document.querySelector(selector);
   if (!elem) return;
@@ -519,3 +511,16 @@ function adjustFontSize(selector, maxSize = 64, minSize = 20, step = 2) {
     elem.style.fontSize = fontSize + 'px';
   }
 }
+
+document.getElementById("answerInput").addEventListener("keydown", function (event) {
+  if (event.key === "Enter") {
+    event.preventDefault();
+    submitAnswer();
+  }
+});
+document.getElementById("loginPassword").addEventListener("keydown", function (event) {
+  if (event.key === "Enter") {
+    event.preventDefault();
+    login();
+  }
+});
