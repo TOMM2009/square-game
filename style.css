@@ -133,8 +133,16 @@
       margin-bottom: 20px;
       color: #00462A;
     }
+    .question-wrapper {
+      position: relative;
+      display: inline-block;
+      min-width: 160px;
+    }
     #timer {
-      margin-left: 10px;
+      position: absolute;
+      right: 0;
+      top: 0;
+      font-family: monospace;
       font-weight: bold;
       color: #d9b569;
       font-size: 2em;
