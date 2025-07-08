@@ -430,7 +430,10 @@ function endGame() {
   const topRecords = records.slice(0, 10);
 
   let html = `
-    <h2>게임 종료! Top 10 느린 문제</h2>
+    <h2 class="result-title">
+      게임 종료!<br>느린 문제 Top 10
+    </h2>
+
     <div class="result-table-wrapper">
       <table class="result-table">
         <thead>
