@@ -248,10 +248,16 @@
      font-weight: 500;
      line-height: 1.8;
    }
-   .result-subtitle .correct-count {
+
+   .correct-count {
      font-size: 26px;
      font-weight: bold;
-     color: #28a745; /* 강조 색상 (초록 계열) */
+     color: #00462A; /* 이대 그린 */
+     text-shadow:
+       -1px -1px 0 #ffffff,
+        1px -1px 0 #ffffff,
+       -1px  1px 0 #ffffff,
+        1px  1px 0 #ffffff;
    }
 
     .result-table-wrapper {
