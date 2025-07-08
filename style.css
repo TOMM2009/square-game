@@ -252,6 +252,7 @@
       min-width: 300px;
       width: auto;
       max-width: 100%;
+      margin-top: 5px;
     }
     
     .result-table th,
