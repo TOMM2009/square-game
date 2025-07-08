@@ -260,6 +260,8 @@ function logout() {
 function startGame(user, userName) {
   currentUser = user;
 
+  userName = userName || "용사";
+
   document.getElementById("welcome").dataset.username = userName;
 
   document.getElementById("loginForm").style.display = "none";
@@ -548,8 +550,15 @@ function showEndGame(savedRecords) {
 
 function restartGame() {
   document.getElementById("result").innerHTML = "";
-  startGame(currentUser, document.getElementById("welcome").dataset.username);
+
+  const userName =
+    document.getElementById("welcome").dataset.username ||
+    currentUser?.email?.split("@")[0] ||
+    "용사";
+
+  startGame(currentUser, userName);
 }
+
 
 function viewUserDetail(uid) {
   db.collection("users").doc(uid).get()
