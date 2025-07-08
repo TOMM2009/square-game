@@ -288,14 +288,15 @@
      letter-spacing: 0.5px;
    }
 
-   .result-subtitle {
-     text-align: center;
-     font-size: 18px;
-     color: #00462A;
-     margin-bottom: 10px;
-     font-weight: 500;
-     line-height: 1.8;
-   }
+  .result-subtitle {
+    text-align: center;
+    font-size: 20px;
+    color: #00462A;
+    font-weight: 600;
+    margin-bottom: 15px;
+    line-height: 1.5;
+  }
+
 
    .correct-count {
      font-size: 26px;
@@ -308,15 +309,7 @@
         1px  1px 0 #ffffff;
    }
 
-   .result-average {
-     text-align: center;
-     font-size: 20px;
-     color: #00462A;
-     font-weight: 600;
-     margin-bottom: 15px;
-   }
-
-    .result-table-wrapper {
+   .result-table-wrapper {
       display: flex;
       justify-content: center;
       margin-top: 0;
