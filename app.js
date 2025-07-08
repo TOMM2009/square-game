@@ -433,7 +433,8 @@ function endGame() {
       게임 종료!
     </h2>
     <div class="result-subtitle">
-      ${totalQuestions}문제 중 ${correctCount}문제 정답!
+      ${totalQuestions}문제 중 
+      <span class="correct-count">${correctCount}</span>문제 정답!
     </div>
     <h2 class="result-title">
       느린 문제 Top 10
@@ -499,7 +500,8 @@ function showEndGame(savedRecords) {
       게임 종료!
     </h2>
     <div class="result-subtitle">
-      ${totalQuestions}문제 중 ${correctCount}문제 정답!
+      ${totalQuestions}문제 중 
+      <span class="correct-count">${correctCount}</span>문제 정답!
     </div>
     <h2 class="result-title">
       느린 문제 Top 10
