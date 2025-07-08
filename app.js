@@ -451,10 +451,17 @@ function submitAnswer() {
   questionCount++;
 }
 
+function calculateAverageTime() {
+  if (records.length === 0) return "0.00";
+
+  const totalTime = records.reduce((sum, rec) => sum + rec.time, 0);
+  return (totalTime / records.length).toFixed(2);
+}
 
 function endGame() {
   stopTimer();
   const correctCount = records.length;
+  const avgTime = calculateAverageTime();
   records.sort((a, b) => b.time - a.time);
   const topRecords = records.slice(0, 10);
 
@@ -463,8 +470,10 @@ function endGame() {
       게임 종료!
     </h2>
     <div class="result-subtitle">
-      ${totalQuestions}문제 중 
-      <span class="correct-count">${correctCount}</span>문제 정답!
+      ${totalQuestions}문제 중 ${correctCount}문제 정답!
+    </div>
+    <div class="result-average">
+      평균 응답 시간: ${avgTime}초
     </div>
     <h2 class="result-title">
       느린 문제 Top 10
@@ -518,6 +527,7 @@ function endGame() {
     timestampSaved: Date.now()
   }));
 }
+
 
 function showEndGame(savedRecords) {
   records = savedRecords || [];
