@@ -112,7 +112,13 @@ function login() {
   auth.signInWithEmailAndPassword(email, password)
     .then(userCredential => {
       const user = userCredential.user;
-      return db.collection("users").doc(user.uid).get().then(doc => {
+      const userRef = db.collection("users").doc(user.uid);
+
+      return userRef.update({
+        loginCount: firebase.firestore.FieldValue.increment(1)
+      }).then(() => {
+        return userRef.get();
+      }).then(doc => {
         const data = doc.data();
         if (data.role === "admin") {
           showAdminPage(user);
