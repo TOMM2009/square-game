@@ -282,7 +282,11 @@ function gameInit() {
 }
 
 function nextQuestion() {
- // document.getElementById("game").classList.remove("correct-background");
+  
+  document.getElementById("nextBtn").style.display = "none";
+  document.getElementById("game").classList.remove("wrong-background");
+  document.getElementById("game").classList.remove("correct-background");
+  
   if (questionCount >= totalQuestions) {
     endGame();
     return;
@@ -393,7 +397,6 @@ function handleTimeout() {
   setTimeout(nextQuestion, 1000);
 }
 
-
 function submitAnswer() {
   stopTimer();
 
@@ -418,7 +421,8 @@ function submitAnswer() {
   if (userAnswer === currentQuestion.answer) {
     document.getElementById("game").classList.add("correct-background");
     setTimeout(() => {
-    document.getElementById("game").classList.remove("correct-background");
+      document.getElementById("game").classList.remove("correct-background");
+      nextQuestion();
     }, 1000);
     records.push({
       question: currentQuestion.text,
@@ -427,16 +431,11 @@ function submitAnswer() {
   } else {
     document.getElementById("feedback").textContent =
       `오답! 정답은 ${currentQuestion.answer} 입니다.`;
+
     document.getElementById("game").classList.add("wrong-background");
-    setTimeout(() => {
-    document.getElementById("game").classList.remove("wrong-background");
-    }, 1000);
+    document.getElementById("nextBtn").style.display = "inline-block";
   }
-
-  questionCount++;
-  setTimeout(nextQuestion, 1000);
 }
-
 
 function endGame() {
   stopTimer();
