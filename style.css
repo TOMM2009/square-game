@@ -230,6 +230,14 @@
       margin-bottom: 20px;
     }
 
+    .result-title {
+      text-align: center;
+      font-size: 24px;
+      color: #00462A; /* 기존 UI 컬러와 어울리는 진초록 */
+      margin-bottom: 20px;
+      font-weight: 700;
+      line-height: 1.4;
+    }
     .result-table-wrapper {
       display: flex;
       justify-content: center;
