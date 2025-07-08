@@ -373,7 +373,7 @@ function startTimer(savedElapsedTime = 0) {
 
 function stopTimer() {
   clearInterval(timerInterval);
-  document.getElementById("timer").textContent = "";
+ // document.getElementById("timer").textContent = "";
 }
 
 function handleTimeout() {
