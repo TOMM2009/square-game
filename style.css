@@ -232,13 +232,14 @@
 
    .result-title {
      text-align: center;
-     font-size: 24px;
+     font-size: 22px;
      color: #00462A;
-     margin-bottom: 10px;
+     margin-bottom: 20px;
      font-weight: 700;
-     line-height: 1.8; /* 줄간격 늘리기 */
+     line-height: 2;
      letter-spacing: 0.5px;
    }
+
 
     .result-table-wrapper {
       display: flex;
