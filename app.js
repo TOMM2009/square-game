@@ -43,7 +43,7 @@ window.onload = function () {
           document.getElementById("logoutBtn").style.display = "block";
 
           // 복원해서 endGame 화면 구성
-          showEndGame(state.records);
+          showEndGame(state.records, state.avgTime);
         } else {
           // 게임 진행 중이던 상태 복원
           currentUser = user;
@@ -461,7 +461,14 @@ function calculateAverageTime() {
 function endGame() {
   stopTimer();
   const correctCount = records.length;
-  const avgTime = calculateAverageTime();
+
+  // 평균 응답 시간 계산
+  let avgTime = "-";
+  if (correctCount > 0) {
+    const totalTime = records.reduce((acc, cur) => acc + cur.time, 0);
+    avgTime = (totalTime / correctCount).toFixed(2);
+  }
+
   records.sort((a, b) => b.time - a.time);
   const topRecords = records.slice(0, 10);
 
@@ -478,7 +485,6 @@ function endGame() {
     <h2 class="result-title">
       느린 문제 Top 10
     </h2>
-
     <div class="result-table-wrapper">
       <table class="result-table">
         <thead>
@@ -519,6 +525,7 @@ function endGame() {
   localStorage.setItem("squareGameState", JSON.stringify({
     status: "end",
     records,
+    avgTime,   
     user: {
       uid: currentUser?.uid,
       email: currentUser?.email,
@@ -529,9 +536,13 @@ function endGame() {
 }
 
 
-function showEndGame(savedRecords) {
+
+
+function showEndGame(savedRecords, savedAvgTime) {
   records = savedRecords || [];
   const correctCount = records.length;
+  const avgTime = savedAvgTime !== undefined ? savedAvgTime : "-";
+
   records.sort((a, b) => b.time - a.time);
   const topRecords = records.slice(0, 10);
 
@@ -540,13 +551,14 @@ function showEndGame(savedRecords) {
       게임 종료!
     </h2>
     <div class="result-subtitle">
-      ${totalQuestions}문제 중 
-      <span class="correct-count">${correctCount}</span>문제 정답!
+      ${totalQuestions}문제 중 <span class="correct-count">${correctCount}</span>문제 정답!
+    </div>
+    <div class="result-subtitle">
+      평균 응답 시간: ${avgTime}초
     </div>
     <h2 class="result-title">
       느린 문제 Top 10
     </h2>
-
     <div class="result-table-wrapper">
       <table class="result-table">
         <thead>
@@ -583,6 +595,7 @@ function showEndGame(savedRecords) {
 
   document.getElementById("result").innerHTML = html;
 }
+
 
 
 
