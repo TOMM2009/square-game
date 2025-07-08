@@ -33,45 +33,59 @@ window.onload = function () {
       if (saved) {
         const state = JSON.parse(saved);
 
-        currentUser = user;
-        questionCount = state.questionCount;
-        currentQuestion = state.currentQuestion;
-        records = state.records || [];
-        startTime = state.startTime;
+        if (state.status === "end") {
+          // 이미 끝난 게임 화면 보여주기
+          currentUser = user;
+          records = state.records || [];
 
-        const savedAt = state.timestampSaved || Date.now();
-        const now = Date.now();
-        const elapsedSinceSave = (now - savedAt) / 1000;
+          document.getElementById("loginForm").style.display = "none";
+          document.getElementById("signupForm").style.display = "none";
+          document.getElementById("game").style.display = "none";
+          document.getElementById("logoutBtn").style.display = "block";
 
-        if (elapsedSinceSave > 99.99) {
-          handleTimeout();
+          // 복원해서 endGame 화면 구성
+          showEndGame(state.records);
         } else {
-          startTimer(elapsedSinceSave);
+          // 게임 진행 중이던 상태 복원
+          currentUser = user;
+          questionCount = state.questionCount;
+          currentQuestion = state.currentQuestion;
+          records = state.records || [];
+          startTime = state.startTime;
+
+          const savedAt = state.timestampSaved || Date.now();
+          const now = Date.now();
+          const elapsedSinceSave = (now - savedAt) / 1000;
+
+          if (elapsedSinceSave > 99.99) {
+            handleTimeout();
+          } else {
+            startTimer(elapsedSinceSave);
+          }
+
+          document.getElementById("loginForm").style.display = "none";
+          document.getElementById("signupForm").style.display = "none";
+          document.getElementById("game").style.display = "block";
+          document.getElementById("logoutBtn").style.display = "block";
+
+          document.getElementById("welcome").textContent =
+            `더원매쓰의 용사, ${state.user?.name || "용사"}님 파이팅!!!`;
+
+          document.getElementById("welcome").dataset.username =
+            state.user?.name || "용사";
+
+          const num = (questionCount + 1).toString().padStart(2, "0");
+          document.getElementById("questionNumberText").textContent =
+            `[${num}번 문제]`;
+
+          document.getElementById("questionText").textContent =
+            currentQuestion.text;
+
+          document.getElementById("answerInput").value = '';
+          document.getElementById("feedback").textContent = '';
+
+          adjustFontSize('.question-text');
         }
-
-        document.getElementById("loginForm").style.display = "none";
-        document.getElementById("signupForm").style.display = "none";
-        document.getElementById("game").style.display = "block";
-        document.getElementById("logoutBtn").style.display = "block";
-
-        document.getElementById("welcome").textContent =
-          `더원매쓰의 용사, ${state.user?.name || "용사"}님 파이팅!!!`;
-
-        document.getElementById("welcome").dataset.username =
-          state.user?.name || "용사";
-
-        const num = (questionCount + 1).toString().padStart(2, "0");
-        document.getElementById("questionNumberText").textContent =
-          `[${num}번 문제]`;
-
-
-        document.getElementById("questionText").textContent =
-          currentQuestion.text;
-
-        document.getElementById("answerInput").value = '';
-        document.getElementById("feedback").textContent = '';
-
-        adjustFontSize('.question-text');
       } else {
         startGame(user, user.email);
       }
@@ -82,6 +96,7 @@ window.onload = function () {
     document.body.style.visibility = "visible";
   });
 };
+
 
 function showLoginForm() {
   document.getElementById("loginForm").style.display = "block";
@@ -410,7 +425,6 @@ function submitAnswer() {
 
 function endGame() {
   stopTimer();
-  localStorage.removeItem("squareGameState");
 
   records.sort((a, b) => b.time - a.time);
   const topRecords = records.slice(0, 10);
@@ -453,7 +467,19 @@ function endGame() {
 
   document.getElementById("game").style.display = "none";
   document.getElementById("result").innerHTML = html;
+
+  localStorage.setItem("squareGameState", JSON.stringify({
+    status: "end",
+    records,
+    user: {
+      uid: currentUser?.uid,
+      email: currentUser?.email,
+      name: document.getElementById("welcome").dataset.username || ""
+    },
+    timestampSaved: Date.now()
+  }));
 }
+
 
 
 function restartGame() {
