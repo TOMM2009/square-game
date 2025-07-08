@@ -230,6 +230,42 @@
       margin-bottom: 20px;
     }
 
+    .result-table-wrapper {
+      display: flex;
+      justify-content: center;
+      margin-top: 20px;
+    }
+    
+    .result-table {
+      border-collapse: collapse;
+      min-width: 300px;
+      width: auto;
+      max-width: 100%;
+    }
+    
+    .result-table th,
+    .result-table td {
+      border: 1px solid #B9B9B9;
+      padding: 8px 12px;
+      text-align: center;
+      white-space: nowrap;
+    }
+    
+    .result-table th {
+      background-color: #00462A;
+      color: #fff;
+    }
+    
+    .result-table tr:nth-child(even) {
+      background-color: #FFFDF1;
+    }
+    
+    .result-table tr:hover {
+      background-color: #B9B9B9;
+      color: #fff;
+    }
+
+
     @media (max-width: 400px) {
       .question-text {
         font-size: 36px;
