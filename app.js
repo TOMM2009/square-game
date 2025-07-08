@@ -480,6 +480,51 @@ function endGame() {
   }));
 }
 
+function showEndGame(savedRecords) {
+  records = savedRecords || [];
+
+  records.sort((a, b) => b.time - a.time);
+  const topRecords = records.slice(0, 10);
+
+  let html = `
+    <h2>게임 종료! Top 10 느린 문제</h2>
+    <div class="result-table-wrapper">
+      <table class="result-table">
+        <thead>
+          <tr>
+            <th>No</th>
+            <th>문제</th>
+            <th>시간(초)</th>
+          </tr>
+        </thead>
+        <tbody>
+  `;
+
+  topRecords.forEach((rec, idx) => {
+    html += `
+      <tr>
+        <td>${idx + 1}</td>
+        <td>${rec.question}</td>
+        <td>${rec.time.toFixed(2)}</td>
+      </tr>
+    `;
+  });
+
+  html += `
+        </tbody>
+      </table>
+    </div>
+    <div style="margin-top: 20px; text-align: center;">
+      <button onclick="restartGame()"
+        style="padding: 10px 20px; font-size: 16px; background-color: #28a745; color: white; border: none; border-radius: 5px; cursor: pointer;">
+        한판더!!
+      </button>
+    </div>
+  `;
+
+  document.getElementById("result").innerHTML = html;
+}
+
 
 
 function restartGame() {
