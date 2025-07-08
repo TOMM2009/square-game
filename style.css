@@ -151,10 +151,18 @@
       text-shadow: 1px 1px 2px #333;
     }
 
+        /* 정답 효과 */
     .correct-background {
       background: linear-gradient(45deg, #00462A, #007A49);
       transition: background 0.5s ease;
     }
+    
+    /* 오답 효과 */
+    .wrong-background {
+      background: linear-gradient(45deg, rgb(242,115,103), rgb(255,160,150));
+      transition: background 0.5s ease;
+    }
+
 
 
     #questionText {
