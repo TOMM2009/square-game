@@ -434,6 +434,7 @@ function submitAnswer() {
 
     document.getElementById("game").classList.add("wrong-background");
     document.getElementById("nextBtn").style.display = "inline-block";
+    document.getElementById("nextBtn").focus();
   }
 }
 
