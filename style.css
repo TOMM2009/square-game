@@ -240,6 +240,14 @@
      letter-spacing: 0.5px;
    }
 
+   .result-subtitle {
+     text-align: center;
+     font-size: 18px;
+     color: #00462A;
+     margin-bottom: 10px;
+     font-weight: 500;
+     line-height: 1.5;
+   }
 
     .result-table-wrapper {
       display: flex;
