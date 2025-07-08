@@ -282,7 +282,7 @@ function gameInit() {
 }
 
 function nextQuestion() {
-  document.getElementById("game").classList.remove("correct-background");
+ // document.getElementById("game").classList.remove("correct-background");
   if (questionCount >= totalQuestions) {
     endGame();
     return;
@@ -408,10 +408,10 @@ function submitAnswer() {
   const timeTaken = ((endTime - startTime) / 1000).toFixed(2);
 
   if (userAnswer === currentQuestion.answer) {
-    //document.getElementById("feedback").textContent =
-      //`정답! 반응 시간: ${timeTaken} 초`;
     document.getElementById("game").classList.add("correct-background");
-
+    setTimeout(() => {
+    document.getElementById("game").classList.remove("correct-background");
+    }, 1000);
     records.push({
       question: currentQuestion.text,
       time: parseFloat(timeTaken)
@@ -419,6 +419,10 @@ function submitAnswer() {
   } else {
     document.getElementById("feedback").textContent =
       `오답! 정답은 ${currentQuestion.answer} 입니다.`;
+    document.getElementById("game").classList.add("wrong-background");
+    setTimeout(() => {
+    document.getElementById("game").classList.remove("wrong-background");
+    }, 1000);
   }
 
   questionCount++;
