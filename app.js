@@ -431,8 +431,8 @@ function submitAnswer() {
       time: parseFloat(timeTaken)
     });
   } else {
-    document.getElementById("feedback").textContent =
-      `오답! 정답은 ${currentQuestion.answer} 입니다.`;
+   document.getElementById("feedback").innerHTML =
+  `오답! 정답은 <span class="correct-answer">${currentQuestion.answer}</span> 입니다.`;
 
     document.getElementById("game").classList.add("wrong-background");
     document.getElementById("nextBtn").style.display = "inline-block";
