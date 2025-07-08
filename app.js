@@ -470,9 +470,9 @@ function endGame() {
       게임 종료!
     </h2>
     <div class="result-subtitle">
-      ${totalQuestions}문제 중 ${correctCount}문제 정답!
+      ${totalQuestions}문제 중 <span class="correct-count">${correctCount}</span>문제 정답!
     </div>
-    <div class="result-average">
+    <div class="result-subtitle">
       평균 응답 시간: ${avgTime}초
     </div>
     <h2 class="result-title">
