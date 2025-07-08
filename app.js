@@ -282,6 +282,7 @@ function gameInit() {
 }
 
 function nextQuestion() {
+  document.getElementById("game").classList.remove("correct-background");
   if (questionCount >= totalQuestions) {
     endGame();
     return;
@@ -407,8 +408,9 @@ function submitAnswer() {
   const timeTaken = ((endTime - startTime) / 1000).toFixed(2);
 
   if (userAnswer === currentQuestion.answer) {
-    document.getElementById("feedback").textContent =
-      `정답! 반응 시간: ${timeTaken} 초`;
+    //document.getElementById("feedback").textContent =
+      //`정답! 반응 시간: ${timeTaken} 초`;
+    document.getElementById("game").classList.add("correct-background");
 
     records.push({
       question: currentQuestion.text,
