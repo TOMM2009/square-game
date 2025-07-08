@@ -382,9 +382,17 @@ function handleTimeout() {
   document.getElementById("feedback").textContent =
     `시간 초과! 정답은 ${currentQuestion.answer} 입니다.`;
 
+  // 회색 배경 효과 추가
+  document.getElementById("game").classList.add("timeout-background");
+
+  setTimeout(() => {
+    document.getElementById("game").classList.remove("timeout-background");
+  }, 1000);
+
   questionCount++;
   setTimeout(nextQuestion, 1000);
 }
+
 
 function submitAnswer() {
   stopTimer();
