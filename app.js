@@ -273,6 +273,7 @@ function startGame(user, userName) {
     `더원매쓰의 용사, ${userName}님 파이팅!!!`;
 
   gameInit();
+  document.getElementById("answerInput").focus();
 }
 
 function gameInit() {
@@ -327,7 +328,8 @@ function nextQuestion() {
   adjustFontSize('.question-text');
 
   startTimer(0);
-
+  document.getElementById("answerInput").focus();
+  
   localStorage.setItem("squareGameState", JSON.stringify({
     questionCount,
     currentQuestion,
