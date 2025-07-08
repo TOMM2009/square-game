@@ -162,6 +162,16 @@
       background: linear-gradient(45deg, rgb(242,115,103), rgb(255,160,150));
       transition: background 0.5s ease;
     }
+    /* 시간 초과 효과 */
+   .timeout-background {
+      background: linear-gradient(
+        45deg,
+        rgb(185, 185, 185),
+        rgb(220, 220, 220)
+      );
+      transition: background 0.5s ease;
+    }
+
 
 
 
