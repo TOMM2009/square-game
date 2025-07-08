@@ -472,6 +472,26 @@ function endGame() {
   records.sort((a, b) => b.time - a.time);
   const topRecords = records.slice(0, 10);
 
+  let tableBody = "";
+
+  if (topRecords.length === 0) {
+    tableBody = `
+      <tr>
+        <td colspan="3">기록 없음</td>
+      </tr>
+    `;
+  } else {
+    topRecords.forEach((rec, idx) => {
+      tableBody += `
+        <tr>
+          <td>${idx + 1}</td>
+          <td>${rec.question}</td>
+          <td>${rec.time.toFixed(2)}</td>
+        </tr>
+      `;
+    });
+  }
+
   let html = `
     <h2 class="result-title">
       게임 종료!
@@ -495,19 +515,7 @@ function endGame() {
           </tr>
         </thead>
         <tbody>
-  `;
-
-  topRecords.forEach((rec, idx) => {
-    html += `
-      <tr>
-        <td>${idx + 1}</td>
-        <td>${rec.question}</td>
-        <td>${rec.time.toFixed(2)}</td>
-      </tr>
-    `;
-  });
-
-  html += `
+          ${tableBody}
         </tbody>
       </table>
     </div>
@@ -525,7 +533,7 @@ function endGame() {
   localStorage.setItem("squareGameState", JSON.stringify({
     status: "end",
     records,
-    avgTime,   
+    avgTime,
     user: {
       uid: currentUser?.uid,
       email: currentUser?.email,
@@ -538,6 +546,7 @@ function endGame() {
 
 
 
+
 function showEndGame(savedRecords, savedAvgTime) {
   records = savedRecords || [];
   const correctCount = records.length;
@@ -545,6 +554,26 @@ function showEndGame(savedRecords, savedAvgTime) {
 
   records.sort((a, b) => b.time - a.time);
   const topRecords = records.slice(0, 10);
+
+  let tableBody = "";
+
+  if (topRecords.length === 0) {
+    tableBody = `
+      <tr>
+        <td colspan="3">기록 없음</td>
+      </tr>
+    `;
+  } else {
+    topRecords.forEach((rec, idx) => {
+      tableBody += `
+        <tr>
+          <td>${idx + 1}</td>
+          <td>${rec.question}</td>
+          <td>${rec.time.toFixed(2)}</td>
+        </tr>
+      `;
+    });
+  }
 
   let html = `
     <h2 class="result-title">
@@ -569,19 +598,7 @@ function showEndGame(savedRecords, savedAvgTime) {
           </tr>
         </thead>
         <tbody>
-  `;
-
-  topRecords.forEach((rec, idx) => {
-    html += `
-      <tr>
-        <td>${idx + 1}</td>
-        <td>${rec.question}</td>
-        <td>${rec.time.toFixed(2)}</td>
-      </tr>
-    `;
-  });
-
-  html += `
+          ${tableBody}
         </tbody>
       </table>
     </div>
@@ -595,6 +612,7 @@ function showEndGame(savedRecords, savedAvgTime) {
 
   document.getElementById("result").innerHTML = html;
 }
+
 
 
 
