@@ -24,7 +24,6 @@ let currentUser = null;
 
 let timerInterval = null;
 let timerStartTime = null;
-
 window.onload = function () {
   auth.onAuthStateChanged(user => {
     if (user) {
@@ -425,13 +424,19 @@ function submitAnswer() {
 
 function endGame() {
   stopTimer();
-
+  const correctCount = records.length;
   records.sort((a, b) => b.time - a.time);
   const topRecords = records.slice(0, 10);
 
   let html = `
     <h2 class="result-title">
-      게임 종료!<br>느린 문제 Top 10
+      게임 종료!
+    </h2>
+    <div class="result-subtitle">
+      ${totalQuestions}문제 중 ${correctCount}문제 정답!
+    </div>
+    <h2 class="result-title">
+      느린 문제 Top 10
     </h2>
 
     <div class="result-table-wrapper">
@@ -490,9 +495,16 @@ function showEndGame(savedRecords) {
   const topRecords = records.slice(0, 10);
 
   let html = `
-     <h2 class="result-title">
-      게임 종료!<br>느린 문제 Top 10
+    <h2 class="result-title">
+      게임 종료!
     </h2>
+    <div class="result-subtitle">
+      ${totalQuestions}문제 중 ${correctCount}문제 정답!
+    </div>
+    <h2 class="result-title">
+      느린 문제 Top 10
+    </h2>
+
     <div class="result-table-wrapper">
       <table class="result-table">
         <thead>
