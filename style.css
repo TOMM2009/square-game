@@ -246,7 +246,12 @@
      color: #00462A;
      margin-bottom: 10px;
      font-weight: 500;
-     line-height: 1.5;
+     line-height: 1.8;
+   }
+   .result-subtitle .correct-count {
+     font-size: 26px;
+     font-weight: bold;
+     color: #28a745; /* 강조 색상 (초록 계열) */
    }
 
     .result-table-wrapper {
