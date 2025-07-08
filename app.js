@@ -490,7 +490,7 @@ function endGame() {
 
 function showEndGame(savedRecords) {
   records = savedRecords || [];
-
+  const correctCount = records.length;
   records.sort((a, b) => b.time - a.time);
   const topRecords = records.slice(0, 10);
 
