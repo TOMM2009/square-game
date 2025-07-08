@@ -620,13 +620,22 @@ function showEndGame(savedRecords, savedAvgTime) {
 function restartGame() {
   document.getElementById("result").innerHTML = "";
 
-  const userName =
-    document.getElementById("welcome").dataset.username ||
-    currentUser?.email?.split("@")[0] ||
-    "용사";
+  let userName = "용사";
+
+  const saved = localStorage.getItem("squareGameState");
+  if (saved) {
+    const state = JSON.parse(saved);
+    userName = state.user?.name || userName;
+  } else {
+    userName =
+      document.getElementById("welcome").dataset.username ||
+      currentUser?.email?.split("@")[0] ||
+      "용사";
+  }
 
   startGame(currentUser, userName);
 }
+
 
 
 function viewUserDetail(uid) {
