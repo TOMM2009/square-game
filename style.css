@@ -183,6 +183,11 @@
       margin-bottom: 10px;
       text-shadow: 3px 3px 5px rgba(0, 0, 0, 0.5); 
    }
+   .correct-answer {
+     font-size: 32px;
+     font-weight: bold;
+     color: #00462A;
+   }
 
     #logoutBtn {
       display: none;
