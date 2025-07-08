@@ -400,45 +400,57 @@ function handleTimeout() {
 }
 
 function submitAnswer() {
-  stopTimer();
-
   const inputElem = document.getElementById("answerInput");
   const input = inputElem.value.trim();
 
+  // ➡️ 빈칸일 때
   if (input === "") {
     document.getElementById("feedback").textContent = "답을 입력하세요!";
     return;
   }
 
+  // ➡️ 숫자가 아닐 때
   if (isNaN(input)) {
     inputElem.value = "";
     document.getElementById("feedback").textContent = "수를 입력하세요!";
     return;
   }
 
+  // ➡️ 정상 입력일 때만 stopTimer()
+  stopTimer();
+
   const userAnswer = Number(input);
   const endTime = performance.now();
   const timeTaken = ((endTime - startTime) / 1000).toFixed(2);
 
   if (userAnswer === currentQuestion.answer) {
+    // 정답일 때 배경 변경
     document.getElementById("game").classList.add("correct-background");
+
+    // 잠깐 보여주고 다음 문제로
     setTimeout(() => {
       document.getElementById("game").classList.remove("correct-background");
       nextQuestion();
     }, 1000);
+
+    // 기록 저장
     records.push({
       question: currentQuestion.text,
       time: parseFloat(timeTaken)
     });
   } else {
-   document.getElementById("feedback").innerHTML =
-  `오답! 정답은 <span class="correct-answer">${currentQuestion.answer}</span> 입니다.`;
+    // 오답일 때 정답 출력 + 배경 변경 + 다음 버튼 표시
+    document.getElementById("feedback").innerHTML =
+      `오답! 정답은 <span class="correct-answer">${currentQuestion.answer}</span> 입니다.`;
 
     document.getElementById("game").classList.add("wrong-background");
     document.getElementById("nextBtn").style.display = "inline-block";
     document.getElementById("nextBtn").focus();
   }
+
+  questionCount++;
 }
+
 
 function endGame() {
   stopTimer();
